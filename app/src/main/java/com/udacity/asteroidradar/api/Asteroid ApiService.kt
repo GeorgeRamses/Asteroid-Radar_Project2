@@ -3,6 +3,8 @@ package com.udacity.asteroidradar.api
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.udacity.asteroidradar.Constants
+import com.udacity.asteroidradar.network.NetworkAsteroid
+import kotlinx.coroutines.Deferred
 import retrofit2.Retrofit
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
@@ -19,9 +21,9 @@ private val retrofit = Retrofit.Builder()
 
 interface AsteroidApiService {
     @GET("neo/rest/v1/feed")
-    suspend fun getAsteroidProperties(
+    suspend fun getAsteroidList(
         @Query("api_key") type: String
-    ) :String
+    ): List<NetworkAsteroid>
 }
 
 object AsteroidApi {

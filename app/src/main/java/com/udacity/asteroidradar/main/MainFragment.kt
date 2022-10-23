@@ -23,8 +23,9 @@ class MainFragment : Fragment() {
 
         binding.viewModel = viewModel
         binding.asteroidRecycler.adapter = AstroidAdapter {
-            Toast.makeText(this.context,it.codename,Toast.LENGTH_SHORT).show()
+            Toast.makeText(this.context, it.codename, Toast.LENGTH_SHORT).show()
         }
+
         setHasOptionsMenu(true)
 
         return binding.root
