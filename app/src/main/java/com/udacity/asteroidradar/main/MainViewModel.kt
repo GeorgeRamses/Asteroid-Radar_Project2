@@ -2,6 +2,8 @@ package com.udacity.asteroidradar.main
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.database.AsteroidDatabase
 import com.udacity.asteroidradar.repository.AsteroidRepository
@@ -25,5 +27,15 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         refreshDataframeRepository()
+    }
+
+}
+
+class ViewModelFactory(val app: Application) : ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+            return MainViewModel(app) as T
+        }
+        throw IllegalArgumentException("unKnown Class")
     }
 }

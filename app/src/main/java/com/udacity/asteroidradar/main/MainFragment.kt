@@ -1,5 +1,6 @@
 package com.udacity.asteroidradar.main
 
+import android.app.Application
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -10,8 +11,11 @@ import com.udacity.asteroidradar.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
 
+
+    val factory = ViewModelFactory(this.context as Application)
+
     private val viewModel: MainViewModel by lazy {
-        ViewModelProvider(this).get(MainViewModel::class.java)
+        ViewModelProvider(this,factory).get(MainViewModel::class.java)
     }
 
     override fun onCreateView(
