@@ -11,10 +11,10 @@ interface AsteroidDao {
     fun insertAll(listAsteroid: ArrayList<DatabaseAsteroid>)
 
     @Query("select * from DatabaseAsteroid order by closeApproachDate")
-    fun getAllAsteroid(): LiveData<List<DatabaseAsteroid>>
+    fun getAllAsteroid(): List<DatabaseAsteroid>
 
     @Query("select * from DatabaseAsteroid where closeApproachDate between :startDate and :endDate order by closeApproachDate")
-    fun filterAsteroid(startDate: String, endDate: String): LiveData<List<DatabaseAsteroid>>
+    fun filterAsteroid(startDate: String, endDate: String): List<DatabaseAsteroid>
 }
 
 @Database(entities = [DatabaseAsteroid::class], version = 1)

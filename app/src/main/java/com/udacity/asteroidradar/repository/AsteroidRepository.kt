@@ -22,41 +22,36 @@ import org.json.JSONObject
 import java.util.*
 
 class AsteroidRepository(private val database: AsteroidDatabase) {
+
+    var asteroids = listOf<Asteroid>()
+
     @SuppressLint("WeekBasedYear")
     @RequiresApi(Build.VERSION_CODES.N)
-    fun filterAsteroid(filter: AsteroidFilter): LiveData<List<Asteroid>> {
-        val calendar = Calendar.getInstance()
-        val starDate = calendar.time
-        calendar.add(Constants.DEFAULT_END_DATE_DAYS, 7)
-        val endDate = calendar.time
-        val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
-        val formatedStartDate = dateFormat.format(starDate)
-        val formatedEndDate = dateFormat.format(endDate)
-        var asteroids: LiveData<List<Asteroid>>? = null
-        when (filter) {
-            AsteroidFilter.ViewTodayAsteroid -> {
-                asteroids =
-                    Transformations.map(database.asteroidDao.filterAsteroid(formatedStartDate, formatedStartDate)) {
-                        it.toAsteroid()
-                    }
-            }
+    suspend fun filterAsteroid(filter: AsteroidFilter) {
+        withContext(Dispatchers.IO) {
+            val calendar = Calendar.getInstance()
+            val starDate = calendar.time
+            calendar.add(Constants.DEFAULT_END_DATE_DAYS, 7)
+            val endDate = calendar.time
+            val dateFormat = SimpleDateFormat(Constants.API_QUERY_DATE_FORMAT, Locale.getDefault())
+            val formatedStartDate = dateFormat.format(starDate)
+            val formatedEndDate = dateFormat.format(endDate)
 
-            AsteroidFilter.ViewWeekAsteroid -> {
-                asteroids =
-                    Transformations.map(database.asteroidDao.filterAsteroid(formatedStartDate, formatedEndDate)) {
-                        it.toAsteroid()
-                    }
-            }
+            when (filter) {
+                AsteroidFilter.ViewTodayAsteroid -> {
+                    asteroids = database.asteroidDao.filterAsteroid(formatedStartDate, formatedStartDate).toAsteroid()
+                }
 
-            AsteroidFilter.ViewSavedAsteroid -> {
-                asteroids = Transformations.map(database.asteroidDao.getAllAsteroid()) {
-                    it.toAsteroid()
+                AsteroidFilter.ViewWeekAsteroid -> {
+                    asteroids = database.asteroidDao.filterAsteroid(formatedStartDate, formatedEndDate).toAsteroid()
+                }
+
+                AsteroidFilter.ViewSavedAsteroid -> {
+                    asteroids = database.asteroidDao.getAllAsteroid().toAsteroid()
                 }
             }
         }
-        return asteroids
     }
-
 
     suspend fun refreshAsteroidDatabase() {
         withContext(Dispatchers.IO) {

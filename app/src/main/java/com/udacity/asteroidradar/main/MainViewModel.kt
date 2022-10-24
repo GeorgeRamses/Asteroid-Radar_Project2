@@ -28,6 +28,8 @@ import java.io.IOException
 import java.util.*
 
 enum class AsteroidFilter { ViewWeekAsteroid, ViewTodayAsteroid, ViewSavedAsteroid }
+
+@RequiresApi(Build.VERSION_CODES.N)
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _erroMessage = MutableLiveData<String>()
     val erroMessage: LiveData<String> = _erroMessage
@@ -42,9 +44,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val asteroidRepository = AsteroidRepository(database)
 
     private val _asteroid = MutableLiveData<List<Asteroid>>()
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    val asteroids = asteroidRepository.filterAsteroid(AsteroidFilter.ViewSavedAsteroid)
+    val asteroids: LiveData<List<Asteroid>> = _asteroid
 
 
     private fun getImageofDay() = viewModelScope.launch {
@@ -55,9 +55,27 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun todayAsteroid() = viewModelScope.launch {
+        asteroidRepository.filterAsteroid(AsteroidFilter.ViewTodayAsteroid)
+        _asteroid.value = asteroidRepository.asteroids
+
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun weekAsteroid() = viewModelScope.launch {
+        asteroidRepository.filterAsteroid(AsteroidFilter.ViewWeekAsteroid)
+        _asteroid.value = asteroidRepository.asteroids
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun savedAsteroid() = viewModelScope.launch {
+        asteroidRepository.filterAsteroid(AsteroidFilter.ViewSavedAsteroid)
+        _asteroid.value = asteroidRepository.asteroids
+    }
+
     @SuppressLint("WeekBasedYear")
     @RequiresApi(Build.VERSION_CODES.N)
-
 
     fun resetError() {
         _erroMessage.value = null
@@ -83,12 +101,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     init {
         refreshDataframeRepository()
         getImageofDay()
-
+        savedAsteroid()
     }
 
 }
 
 class ViewModelFactory(val app: Application) : ViewModelProvider.Factory {
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             return MainViewModel(app) as T
