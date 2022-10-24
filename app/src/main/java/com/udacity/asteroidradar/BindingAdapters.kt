@@ -2,14 +2,29 @@ package com.udacity.asteroidradar
 
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import com.udacity.asteroidradar.main.AstroidAdapter
+import java.net.URL
 
 @BindingAdapter("listData")
 fun setData(recyclerView: RecyclerView, data: List<Asteroid>?) {
     val adapter = recyclerView.adapter as AstroidAdapter
     adapter.submitList(data)
+}
+
+@BindingAdapter("imageDayUrl")
+fun bindImageofDay(imageView: ImageView, url: String?) {
+    url?.let {
+        val imgUri = url.toUri().buildUpon().scheme("https").build()
+        Picasso.get()
+            .load(imgUri)
+            .placeholder(R.drawable.loading_animation)
+            .error(R.drawable.placeholder_error)
+            .into(imageView)
+    }
 }
 
 @BindingAdapter("statusIcon")
@@ -41,6 +56,7 @@ fun bindTextViewToDate(textView: TextView, date: String) {
     val context = textView.context
     textView.text = date
 }
+
 @BindingAdapter("astronomicalUnitText")
 fun bindTextViewToAstronomicalUnit(textView: TextView, number: Double) {
     val context = textView.context

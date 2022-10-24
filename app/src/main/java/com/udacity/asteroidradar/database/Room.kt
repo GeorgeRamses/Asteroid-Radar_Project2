@@ -8,10 +8,13 @@ import com.udacity.asteroidradar.Asteroid
 @Dao
 interface AsteroidDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(listAsteroid: List<DatabaseAsteroid>)
+    fun insertAll(listAsteroid: ArrayList<DatabaseAsteroid>)
 
-    @Query("select * from DatabaseAsteroid")
+    @Query("select * from DatabaseAsteroid order by closeApproachDate")
     fun getAllAsteroid(): LiveData<List<DatabaseAsteroid>>
+
+    @Query("select * from DatabaseAsteroid where closeApproachDate between :startDate and :endDate order by closeApproachDate")
+    fun filterAsteroid(startDate: String, endDate: String): LiveData<List<DatabaseAsteroid>>
 }
 
 @Database(entities = [DatabaseAsteroid::class], version = 1)
