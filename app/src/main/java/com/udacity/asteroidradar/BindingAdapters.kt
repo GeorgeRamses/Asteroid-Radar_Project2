@@ -24,8 +24,8 @@ fun bindImageofDay(imageView: ImageView, pictureofDay: PictureOfDay?) {
                 Picasso.get().load(imgUri).placeholder(R.drawable.loading_animation)
                     .error(R.drawable.placeholder_error)
                     .into(imageView)
-                imageView.contentDescription =
-                    imageView.context.getString(R.string.nasa_picture_of_day_content_description_format)
+                imageView.contentDescription = it.title
+
             } else {
                 imageView.setImageResource(R.drawable.image_not_available)
                 imageView.contentDescription =
