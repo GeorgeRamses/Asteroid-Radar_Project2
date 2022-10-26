@@ -7,7 +7,6 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.udacity.asteroidradar.main.AstroidAdapter
-import java.net.URL
 
 @BindingAdapter("listData")
 fun setData(recyclerView: RecyclerView, data: List<Asteroid>?) {
